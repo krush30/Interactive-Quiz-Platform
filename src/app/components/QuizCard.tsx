@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { db, IntegerQuestion, MCQQuestion } from "../lib/db";
 import { seedQuizData } from "../lib/seedData";
 
-const QuizCard = ({ index }) => {
+const QuizCard = ({ index }: { index: number }) => {
   const router = useRouter();
   const [mcqQuestions, setMcqQuestions] = useState<MCQQuestion[]>([]);
   const [integerQuestions, setIntegerQuestions] = useState<IntegerQuestion[]>(
