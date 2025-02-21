@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Interactive Quiz App
 
-## Getting Started
+This is a simple quiz application built using **Next.js, TypeScript, and Dexie (IndexedDB)**. It allows users to take quizzes with multiple-choice and integer-based questions.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Dynamic Quiz Questions:** Supports both MCQs and integer-based questions.
+- **Local Database:** Uses Dexie.js to store quiz data in IndexedDB.
+- **Timer Calculation:** Automatically calculates quiz duration based on question count.
+- **Routing:** Uses `useRouter` from Next.js for navigation.
+
+## Installation
+
+To set up the project, follow these steps:
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/krush30/Interactive-Quiz-Platform.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd interactive-quiz-platform
+   ```
+3. Install dependencies:
+   ```sh
+   npm install
+   ```
+4. Run the development server:
+   ```sh
+   npm run dev
+   ```
+   The app should now be running at `http://localhost:3000`.
+
+## Project Structure
+
+```
+quiz-app/
+│-- lib/
+│   ├── db.ts      # Dexie.js setup for IndexedDB
+│   ├── seedData.ts # Function to seed quiz questions
+│-- components/
+│   ├── Header.tsx
+│   ├── QuizCard.tsx # Component to display quiz info
+|   |── Footer.tsx
+│-- public/
+│-- package.json
+│-- README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How It Works
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- The `QuizCard` component fetches quiz data from IndexedDB and displays the number of questions.
+- When the **Start** button is clicked, it navigates to `/quiz`, where users can take the quiz.
+- The quiz duration is calculated dynamically based on the number of questions (30 sec per question).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technologies Used
 
-## Learn More
+- **Next.js** - React framework for SSR and routing
+- **TypeScript** - Statically typed JavaScript
+- **Dexie.js** - Wrapper for IndexedDB
+- **Ant Design** - UI components
 
-To learn more about Next.js, take a look at the following resources:
+## Future Improvements
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Add a scoring system.
+- Implement quiz categories.
+- Store user progress.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### Made during my internship 😃
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Hope this helps!
