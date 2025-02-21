@@ -68,6 +68,4 @@ quiz-app/
 
 ---
 
-### Made during my internship 😃
-
 Hope this helps!

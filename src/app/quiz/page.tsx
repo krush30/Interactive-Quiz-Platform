@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 "use client";
-import { Button, Col, Input, Modal, Result, Row } from "antd";
+import { Button, Input, Modal, Result } from "antd";
 import React, { useEffect, useState } from "react";
 import { db, IntegerQuestion, MCQQuestion } from "../lib/db";
 import { seedQuizData } from "../lib/seedData";
@@ -143,13 +143,14 @@ const Quiz = () => {
   };
 
   return (
-    <div className=" flex flex-col h-[calc(100vh-120px)] p-4">
-      <Row className="h-[65%]">
-        <Col span={16} className="bg-gray-100 flex flex-col p-8">
+    <div className="flex flex-col min-h-[calc(100vh-120px)] p-2 sm:p-4">
+      <div className="flex flex-col sm:flex-row sm:h-auto">
+        {/* Left Column: Questions */}
+        <div className="w-full sm:w-2/3 bg-gray-100 flex flex-col p-4 sm:p-8">
           {/* Navigation Buttons */}
-          <div className="w-full flex justify-between mb-4">
+          <div className="w-full flex flex-col sm:flex-row justify-between mb-4 gap-2">
             <Button
-              className={`px-6 py-2 rounded-md shadow-md transition-transform transform ${
+              className={`w-full sm:w-auto px-4 py-2 rounded-md shadow-md transition-transform transform ${
                 currentQsIndex === 0
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-500 hover:scale-105 hover:bg-blue-600 text-white"
@@ -159,10 +160,8 @@ const Quiz = () => {
             >
               Prev
             </Button>
-
-            {/* Next Button - Disabled for Last Question */}
             <Button
-              className={`px-6 py-2 rounded-md shadow-md transition-transform transform ${
+              className={`w-full sm:w-auto px-4 py-2 rounded-md shadow-md transition-transform transform ${
                 currentQsIndex === totalQuestions - 1
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-green-500 hover:scale-105 hover:bg-green-600 text-white"
@@ -180,14 +179,14 @@ const Quiz = () => {
             if (show) {
               return (
                 <div key={q.id}>
-                  <h2 className="text-lg font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold">
                     {index + 1}. {q.question}
                   </h2>
                   <ul className="mt-2">
                     {q.options.map((option, i) => (
                       <li
                         key={i}
-                        className="p-2 my-1 cursor-pointer min-w-[400px] flex items-center gap-2"
+                        className="p-2 my-1 cursor-pointer min-w-full sm:min-w-[400px] flex items-center gap-2"
                       >
                         <input
                           type="radio"
@@ -199,7 +198,7 @@ const Quiz = () => {
                         />
                         <label
                           onClick={() => setCurrentQsAns({ [q.id!]: option })}
-                          className="cursor-pointer"
+                          className="cursor-pointer text-sm sm:text-base"
                         >
                           {option}
                         </label>
@@ -210,20 +209,14 @@ const Quiz = () => {
               );
             }
           })}
-          {/* Integer-Type Questions */}
           {integerQuestions.map((q, index) => {
             const show = currentQsIndex === q.id! - 1;
             if (show) {
               return (
                 <div key={q.id}>
-                  <h2 className="text-lg font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold">
                     {mcqQuestions.length + index + 1}. {q.question}
                   </h2>
-                  {/* <Input
-                    type="number"
-                    value={answers[q.id!] || ""}
-                    onChange={(e) => console.log(e.target.value)}
-                  /> */}
                   <Input
                     type="number"
                     value={answers[q.id!]}
@@ -231,18 +224,18 @@ const Quiz = () => {
                       e.preventDefault();
                       setCurrentQsAns({ [q.id!]: e?.target?.value! });
                     }}
-                    className="mt-2 p-2 bordaer rounded-md w-full max-w-[400px]"
+                    className="mt-2 p-2 border rounded-md w-full max-w-[300px] sm:max-w-[400px]"
                     placeholder="Enter your answer"
                   />
                 </div>
               );
             }
           })}
-          <hr className="w-full border-t-2 border-gray-300 mt-6 mb-4 transition-all duration-300 hover:border-gray-500" />
+          <hr className="w-full border-t-2 border-gray-300 mt-4 mb-4 transition-all duration-300 hover:border-gray-500" />
 
           <div className="w-full flex justify-end">
             <Button
-              className={`px-6 py-2 rounded-md shadow-md ${
+              className={`w-full sm:w-auto px-4 py-2 rounded-md shadow-md ${
                 expiredQuestion.includes(currentQsIndex) ||
                 answers[currentQsIndex + 1]?.toString().trim().length > 0
                   ? "bg-gray-400 cursor-not-allowed"
@@ -260,54 +253,56 @@ const Quiz = () => {
                 : "Save Answer"}
             </Button>
           </div>
-        </Col>
+        </div>
 
-        <Col span={8} className=" flex items-center justify-center">
-          <div className="text-center mt-4 w-[250px]">
-            <p className="text-lg font-semibold">⏳ Time Left: {timer}s</p>
+        {/* Right Column: Timer */}
+        <div className="w-full sm:w-1/3 flex items-center justify-center p-4">
+          <div className="text-center w-full">
+            <p className="text-base sm:text-lg font-semibold">
+              ⏳ Time Left: {timer}s
+            </p>
           </div>
+        </div>
+      </div>
 
-          <hr className="w-full border-t-2 border-gray-300 mt-6 mb-4 transition-all duration-300 hover:border-gray-500" />
-        </Col>
-      </Row>
-      <Row className="h-[35%] flex items-center justify-center relative">
+      {/* Feedback and Submit Section */}
+      <div className="flex flex-col items-center justify-center p-4 relative">
         {feedback.trim() !== "" && (
           <Result
             status={isCorrect ? "success" : "error"}
             title={isCorrect ? "Correct Answer" : "Wrong Answer"}
-            className="animate-fadeIn"
-          ></Result>
+            className="animate-fadeIn w-full"
+          />
         )}
 
-        {/* 🚀 Submit  */}
         <Button
           onClick={showModal}
-          className="absolute w-40 h-16 bottom-6 right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:from-indigo-500 hover:to-purple-600"
+          className="w-full sm:w-40 h-12 sm:h-16 mt-4 sm:absolute sm:bottom-6 sm:right-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:from-indigo-500 hover:to-purple-600"
         >
           🚀 Submit
         </Button>
 
-        {/* ✨ Custom Styled Modal */}
+        {/* Submission Modal */}
         <Modal
           open={open}
           onOk={handleOk}
           onCancel={handleCancel}
           title={
-            <div className="text-center text-2xl font-bold text-indigo-600">
+            <div className="text-center text-xl sm:text-2xl font-bold text-indigo-600">
               🎉 Quiz Submission
             </div>
           }
-          className="p-6"
+          className="p-4 sm:p-6"
           footer={() => (
-            <div className="flex justify-between p-4">
+            <div className="flex flex-col sm:flex-row justify-between p-4 gap-2">
               <Button
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md shadow-sm transition-all duration-200 hover:bg-gray-300"
+                className="w-full sm:w-auto bg-gray-200 text-gray-700 px-4 py-2 rounded-md shadow-sm transition-all duration-200 hover:bg-gray-300"
                 onClick={handleCancel}
               >
                 ❌ Cancel
               </Button>
               <Button
-                className="bg-green-500 text-white px-5 py-2 rounded-md shadow-lg transition-all duration-300 hover:scale-105 hover:bg-green-600"
+                className="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-md shadow-lg transition-all duration-300 hover:scale-105 hover:bg-green-600"
                 onClick={showResultModal}
               >
                 ✅ Confirm
@@ -315,69 +310,70 @@ const Quiz = () => {
             </div>
           )}
         >
-          <p className="text-lg text-gray-700 text-center">
+          <p className="text-base sm:text-lg text-gray-700 text-center">
             Are you sure you want to submit your answers? Once submitted, you
             cannot make changes.
           </p>
         </Modal>
+
+        {/* Result Modal */}
         <Modal
           open={openResult}
-          title={null} // Remove default title for a custom design
+          title={null}
           onOk={handleOkResult}
           onCancel={handleCancelResult}
-          zIndex={2000} // Ensures it appears on top
-          width="70vw" // 👈 Occupies 70% of screen width
-          style={{ height: "70vh", top: "15vh" }} // 👈 Occupies 70% height and centers properly
-          className="rounded-lg shadow-xl p-6 bg-gradient-to-br from-indigo-100 to-indigo-300"
-          footer={null} // Custom footer below
+          zIndex={2000}
+          width="90vw sm:70vw"
+          style={{ height: "80vh", top: "10vh" }}
+          className="rounded-lg shadow-xl p-4 sm:p-6 bg-gradient-to-br from-indigo-100 to-indigo-300"
+          footer={null}
         >
-          {/* 🎉 Title Section */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-indigo-700 animate-pulse">
+            <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 animate-pulse">
               🎉 Quiz Completed!
             </h2>
-            <p className="text-gray-600 text-lg mt-2">
+            <p className="text-sm sm:text-lg text-gray-600 mt-2">
               Here’s your performance breakdown:
             </p>
           </div>
 
-          {/* 📊 Score Breakdown */}
-          <div className="mt-6 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-lg shadow-md text-center">
-              <h3 className="text-xl font-semibold text-green-600">
+              <h3 className="text-lg sm:text-xl font-semibold text-green-600">
                 ✅ Correct Answers
               </h3>
-              <p className="text-2xl font-bold text-green-500">
+              <p className="text-xl sm:text-2xl font-bold text-green-500">
                 {correct} / {totalQuestions}
               </p>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md text-center">
-              <h3 className="text-xl font-semibold text-red-600">
+              <h3 className="text-lg sm:text-xl font-semibold text-red-600">
                 ❌ Wrong Answers
               </h3>
-              <p className="text-2xl font-bold text-red-500">
+              <p className="text-xl sm:text-2xl font-bold text-red-500">
                 {wrong} / {totalQuestions}
               </p>
             </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md text-center">
-            <h3 className="text-xl font-semibold text-yellow-600">⭐ Score</h3>
-            <p className="text-2xl font-bold text-yellow-500">
-              {(correct / totalQuestions) * 100}%
-            </p>
+            <div className="bg-white p-4 rounded-lg shadow-md text-center col-span-1 sm:col-span-2">
+              <h3 className="text-lg sm:text-xl font-semibold text-yellow-600">
+                ⭐ Score
+              </h3>
+              <p className="text-xl sm:text-2xl font-bold text-yellow-500">
+                {(correct / totalQuestions) * 100}%
+              </p>
+            </div>
           </div>
 
-          {/* 🚀 Action Buttons */}
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-4">
             <Button
               onClick={handleOkResult}
-              className="bg-green-500 text-white px-6 py-2 rounded-md shadow-lg transition-all duration-300 hover:scale-105 hover:bg-green-600"
+              className="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-md shadow-lg transition-all duration-300 hover:scale-105 hover:bg-green-600"
             >
               ✅ Go to HomePage
             </Button>
           </div>
         </Modal>
-      </Row>
+      </div>
     </div>
   );
 };

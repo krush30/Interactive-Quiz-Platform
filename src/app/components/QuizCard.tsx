@@ -31,20 +31,25 @@ const QuizCard = ({ index }: { index: number }) => {
 
   return (
     <Card
-      className="m-3"
-      title={`Sample quiz ${index}`}
+      className="m-2 sm:m-3 w-full max-w-[300px] mx-auto" // Full width on mobile, capped at 300px on larger screens
+      title={
+        <span className="text-sm sm:text-base font-semibold">
+          Sample Quiz {index}
+        </span>
+      }
       extra={
         <Button
-          className="bg-[#21bb0f] text-white font-bold"
+          className="bg-[#21bb0f] text-white font-bold h-10 px-4 sm:h-12 sm:px-6" // Larger touch area on mobile
           onClick={handleStartQuiz}
         >
           Start
         </Button>
       }
-      style={{ width: 300 }}
     >
-      <p>No of questions: {totalQuestions}</p>
-      <p>Time : {(totalQuestions * 30) / 60} minutes</p>
+      <p className="text-xs sm:text-sm">No of questions: {totalQuestions}</p>
+      <p className="text-xs sm:text-sm">
+        Time: {(totalQuestions * 30) / 60} minutes
+      </p>
     </Card>
   );
 };
