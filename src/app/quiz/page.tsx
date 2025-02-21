@@ -5,14 +5,12 @@ import React, { useEffect, useState } from "react";
 import { db, IntegerQuestion, MCQQuestion } from "../lib/db";
 import { seedQuizData } from "../lib/seedData";
 import { useRouter } from "next/navigation";
-import { log } from "console";
 
 const Quiz = () => {
   const [mcqQuestions, setMcqQuestions] = useState<MCQQuestion[]>([]);
   const [integerQuestions, setIntegerQuestions] = useState<IntegerQuestion[]>(
     []
   );
-  const [questions, setQuestions] = useState([{}]);
   const [answers, setAnswers] = useState<{ [key: number]: string | number }>(
     {}
   );
@@ -23,7 +21,7 @@ const Quiz = () => {
   const [feedback, setFeedback] = useState("");
   const [isCorrect, setIsCorrect] = useState(false);
   const [timer, setTimer] = useState(30);
-  const [isTimeUp, setIsTimeUp] = useState(false);
+  // const [isTimeUp, setIsTimeUp] = useState(false);
   const [expiredQuestion, setExpiredQuestion] = useState<number[]>([]);
   const [open, setOpen] = useState(false);
   const [openResult, setOpenResult] = useState(false);
@@ -38,17 +36,16 @@ const Quiz = () => {
       const storedIntegers = await db.integerQuestions.toArray();
       setMcqQuestions(storedMcqs);
       setIntegerQuestions(storedIntegers);
-      setQuestions([...mcqQuestions, ...integerQuestions]);
     };
     fetchQuestions();
   }, []);
 
   // Track expired questions
-  useEffect(() => {
-    if (isTimeUp && !expiredQuestion.includes(currentQsIndex)) {
-      setExpiredQuestion((prev) => [...prev, currentQsIndex]);
-    }
-  }, [isTimeUp, currentQsIndex, expiredQuestion]);
+  // useEffect(() => {
+  //   if (!expiredQuestion.includes(currentQsIndex)) {
+  //     setExpiredQuestion((prev) => [...prev, currentQsIndex]);
+  //   }
+  // }, [currentQsIndex, expiredQuestion]);
 
   useEffect(() => {
     //if qs is already expired, don't start timer
@@ -246,7 +243,8 @@ const Quiz = () => {
           <div className="w-full flex justify-end">
             <Button
               className={`px-6 py-2 rounded-md shadow-md ${
-                isTimeUp
+                expiredQuestion.includes(currentQsIndex) ||
+                answers[currentQsIndex + 1]?.toString().trim().length > 0
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-purple-500 hover:bg-purple-600 text-white"
               }`}
@@ -256,7 +254,10 @@ const Quiz = () => {
               }
               onClick={onSaveClick}
             >
-              {isTimeUp ? "Time Up!" : "Save Answer"}
+              {expiredQuestion.includes(currentQsIndex) ||
+              answers[currentQsIndex + 1]?.toString().trim().length > 0
+                ? "Time Up!"
+                : "Save Answer"}
             </Button>
           </div>
         </Col>
@@ -297,7 +298,7 @@ const Quiz = () => {
             </div>
           }
           className="p-6"
-          footer={(_, { OkBtn, CancelBtn }) => (
+          footer={() => (
             <div className="flex justify-between p-4">
               <Button
                 className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md shadow-sm transition-all duration-200 hover:bg-gray-300"
