@@ -49,7 +49,10 @@ const Quiz = () => {
 
   useEffect(() => {
     //if qs is already expired, don't start timer
-    if (expiredQuestion.includes(currentQsIndex)) {
+    if (
+      expiredQuestion.includes(currentQsIndex) ||
+      answers[currentQsIndex + 1]?.toString().length > 0
+    ) {
       return;
     }
     // Reset timer whenever the question changes
